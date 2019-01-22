@@ -15,4 +15,6 @@
 
     <string name="strSeparadorIdentificadorCompuesto">$</string>
 
+    <string name="strNoCuentaConInternet">No tiene acceso a internet. Verifique su conexion.</string>
+
 </resources>

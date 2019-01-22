@@ -2,6 +2,9 @@ package com.example.adrian.foldersreslayout;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,12 +34,18 @@ public class ListadoPrueba extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private CoordinatorLayout coordinatorLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listado_prueba);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         rvNotificaciones = findViewById(R.id.rvNotificaciones);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         rvNotificaciones.setLayoutManager(layoutManager);
 
@@ -52,18 +61,30 @@ public class ListadoPrueba extends AppCompatActivity {
         rvNotificaciones.setAdapter(oRvAdapterNotificaciones);
 
         obtenerListadoNotificaciones();
+
+
+        swipeRefreshLayout.setColorSchemeResources(R.color.windowBackground);
+        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                obtenerListadoNotificaciones();
+            }
+        });
     }
 
     public void obtenerListadoNotificaciones() {
         String REQUEST_TAG = "MAINACTIVITY.OBTENERLISTADONOTIFICACIONES";
         if (Utilerias.isOnline(getApplicationContext())) {
 
-            progressDialog = new ProgressDialog(ListadoPrueba.this);
+            /*progressDialog = new ProgressDialog(ListadoPrueba.this);
             progressDialog.setMessage(getResources().getString(R.string.strProcesando));
             progressDialog.setCancelable(false);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.custom_progress_dialog));
-            progressDialog.show();
+            progressDialog.show();*/
+            swipeRefreshLayout.setRefreshing(true);
 
             final JSONObject localJSONObject = new JSONObject();
             try {//creamos el objeto con toda la informacion del dispositivo
@@ -74,11 +95,14 @@ public class ListadoPrueba extends AppCompatActivity {
                             @Override
                             public void onResponse(String response) {
                                 try {
-                                    if(progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                    /*if(progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    if (swipeRefreshLayout.isRefreshing())
+                                        swipeRefreshLayout.setRefreshing(false);
                                     JSONObject object = new JSONObject(response);
 
                                     if (!object.getJSONObject("meta").getBoolean("isValid")) {
+                                        Snackbar.make(coordinatorLayout,object.getJSONObject("meta").getString("mensaje"),Snackbar.LENGTH_LONG).show();
                                         lstNotificaciones.clear();
                                         oRvAdapterNotificaciones.notifyDataSetChanged();
                                     }
@@ -99,8 +123,10 @@ public class ListadoPrueba extends AppCompatActivity {
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 Log.i("error", "errorResponse al listar las notificaciones.");
-                                if(progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                                Snackbar.make(coordinatorLayout,error.getMessage(),Snackbar.LENGTH_LONG).show();
+
+                                if (swipeRefreshLayout.isRefreshing())
+                                    swipeRefreshLayout.setRefreshing(false);
                             }
                         }) {
                     @Override
@@ -118,11 +144,14 @@ public class ListadoPrueba extends AppCompatActivity {
                 VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, REQUEST_TAG);
             } catch (JSONException localJSONException) {
                 Log.i("error", localJSONException.getMessage());
-                if(progressDialog.isShowing())
-                    progressDialog.dismiss();
-
+                if (swipeRefreshLayout.isRefreshing())
+                    swipeRefreshLayout.setRefreshing(false);
+                Snackbar.make(coordinatorLayout,localJSONException.getMessage(),Snackbar.LENGTH_LONG).show();
             }
         }else{
+            if (swipeRefreshLayout.isRefreshing())
+                swipeRefreshLayout.setRefreshing(false);
+            Snackbar.make(coordinatorLayout,getResources().getString(R.string.strNoCuentaConInternet),Snackbar.LENGTH_LONG).show();
         }
     }
 }
