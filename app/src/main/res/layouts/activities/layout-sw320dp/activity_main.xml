@@ -32,7 +32,7 @@
                     android:layout_height="65dp"
                     android:background="#ffff"
                     android:inputType="text"
-                    android:hint="Nombre (s) layout"
+                    android:hint="Nombre (s) layout-sw320dp"
                     android:textCursorDrawable="@null"
                     android:maxLines="1" >
                     <requestFocus />

@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">foldersResLayout</string>
+
+
+    <string name="strPromptSexo">Sexo</string>
+    <string name="strPromptMunicipios">Municipios</string>
+    <string name="strPromptOcupaciones">Ocupaciones</string>
+    <string name="strPromptGradosDeEstudios">Grados de Estudios</string>
+
+    <string name="strProcesando">Procesando..</string>
+
+    <string name="strIdentificador">identificador</string>
+
+    <string name="strUrlListadoNotificaciones">http://desarrolloapodaca.000webhostapp.com/fcmAsesorCCU/api/listadoNotificaciones.php</string>
+
+    <string name="strSeparadorIdentificadorCompuesto">$</string>
+
 </resources>

@@ -3,4 +3,19 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="color14">#79acafb3</color>
+
+    <color name="c_pressed_item_list">#c7c7c7</color>
+
+    <color name="windowBackground">#FFFFFF</color>
+
+    <color name="color11pressed">#b5c695</color>
+
+    <color name="color11">#6C9812</color>
+
+    <color name="color10pressed">#edc891</color>
+
+    <color name="color10">#f09714</color>
+    <color name="color2">#80C4E8</color>
 </resources>
